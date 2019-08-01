@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <title>Каталог докуминтов</title>
+</head>
+
+<body>
+<div th:replace="~{top_bar :: bar(DocumentsList)}"/>
+<div class="container">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Заголовок документа</th>
+            <th>Компания 1</th>
+            <th>Компания 2</th>
+            <th>Содержание</th>
+            <th>Подпись 1</th>
+            <th>Подпись 2</th>
+            <th>Действия</th>
+            <!--<th sec:authorize="hasAnyRole('ADMIN')">Действия</th>-->
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="document : ${documents}">
+            <td th:text="${document.getTitle()}"/>
+            <td th:text="${document.getFirstCompany().getName()}"/>
+            <td th:text="${document.getSecondCompany().getName()}"/>
+            <td th:text="${document.getContent()}"/>
+            <td th:text="${document.isFirstSignature()}"/>
+            <td th:text="${document.isSecondSignature()}"/>
+
+            <td th:if="${document.getFirstCompany().getName() ne 'Abibas'
+                        and !(document.isFirstSignature() and document.isSecondSignature())}">
+                <a th:href="@{'/documents/edit/' + ${document.id}}" th:text="Редактировать"/><br>
+                <a th:href="@{'/documents/sign/' + ${document.id}}" th:text="Подписать"/>
+            </td>
+
+            <td th:if="${document.getFirstCompany().getName() eq 'Abibas'
+                        and !(document.isFirstSignature() and document.isSecondSignature())}">
+                <span th:text="${'Документ на рассмотрении у партнера'}"/>
+            </td>
+
+            <td th:if="${document.isFirstSignature() and document.isSecondSignature()}">
+                <span th:text="${'Обработка документа завершена'}"/>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div>
+        <form th:action="@{/products/add}" method="get" class="form-horizontal">
+            <div style="margin-top: 10px" class="form-group">
+                <button type="submit" class="btn btn-primary">Добавить документ</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

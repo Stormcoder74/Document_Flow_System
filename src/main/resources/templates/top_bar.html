@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="fluid-container" th:fragment="bar(activeTab)">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item" th:classappend="${activeTab == 'Home' ? 'active' : ''}">
+                    <a class="nav-link" th:href="@{/}">Home<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item" th:classappend="${activeTab == 'DocumentsList' ? 'active' : ''}">
+                    <a class="nav-link" th:href="@{'/documents?companyName=Abibas'}">Documents list</a>
+                </li>
+                <li class="nav-item" th:classappend="${activeTab == 'DocumentsDetails' ? 'active' : ''}">
+                    <a class="nav-link" th:href="@{#}" th:text="'Documents details'"></a>
+                </li>
+                <li sec:authorize="isAuthenticated()" class="nav-item">
+                    <div>
+                        <form th:action="@{/logout}" method="POST">
+                            <a href="#" class="btn btn-success" sec:authentication="principal.username."/>
+                            <input type="submit" class="btn btn-success" value="Logout"/>
+                        </form>
+                    </div>
+                </li>
+                <li sec:authorize="isAnonymous()" class="nav-item" th:unless="${activeTab eq 'Login'}">
+                    <div>
+                        <form th:action="@{/authenticateTheUser}" method="post" class="input-group">
+                            <input type="text" name="username" placeholder="username" class="form-control">
+                            <input type="password" name="password" placeholder="password" class="form-control">
+                            <button type="submit" class="btn btn-warning">Login</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="visible-md" style="height:80px;"></div>
+</div>
+
+</body>
+</html>

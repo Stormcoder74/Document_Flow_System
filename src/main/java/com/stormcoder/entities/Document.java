@@ -5,10 +5,10 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "documents")
-public class Document {
+public class Document implements Singable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String title;
 
@@ -27,6 +27,9 @@ public class Document {
     private boolean secondSignature;
 
     private String content;
+
+    public Document() {
+    }
 
     public Document(String title, Company firstCompany,
                     Company secondCompany, String content) {
@@ -51,7 +54,7 @@ public class Document {
         return Objects.hash(id);
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -83,16 +86,8 @@ public class Document {
         return firstSignature;
     }
 
-    public void setFirstSignature(boolean firstSignature) {
-        this.firstSignature = firstSignature;
-    }
-
     public boolean isSecondSignature() {
         return secondSignature;
-    }
-
-    public void setSecondSignature(boolean secondSignature) {
-        this.secondSignature = secondSignature;
     }
 
     public String getContent() {
@@ -101,5 +96,17 @@ public class Document {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public boolean signIt(Company company) {
+        if (secondCompany.equals(company) && !secondSignature){
+            secondSignature = true;
+            Company tmpCompany = firstCompany;
+            firstCompany = secondCompany;
+            secondCompany = tmpCompany;
+            return true;
+        }
+        return false;
     }
 }

@@ -24,9 +24,9 @@ CREATE TABLE users (
 
 INSERT INTO users
 VALUES
-('user1', '{noop}123', TRUE, 1),
-('user2', '{noop}123', TRUE, 2),
-('user3', '{noop}123', TRUE, 3);
+    ('user1', '{noop}123', TRUE, 1),
+    ('user2', '{noop}123', TRUE, 2),
+    ('user3', '{noop}123', TRUE, 3);
 
 CREATE TABLE authorities (
     username VARCHAR(50),
@@ -42,10 +42,10 @@ CREATE TABLE authorities (
 
 INSERT INTO authorities
 VALUES
-('user1', 'ROLE_ADMIN'),
-('user1', 'ROLE_USER'),
-('user2', 'ROLE_USER'),
-('user3', 'ROLE_USER');
+    ('user1', 'ROLE_ADMIN'),
+    ('user1', 'ROLE_USER'),
+    ('user2', 'ROLE_USER'),
+    ('user3', 'ROLE_USER');
 
 CREATE TABLE documents (
     id serial PRIMARY KEY,
@@ -64,3 +64,9 @@ CREATE TABLE documents (
     FOREIGN KEY (second_company)
     REFERENCES companies (id)
 );
+
+INSERT INTO documents
+VALUES
+    (1, 'Document #1', 1, 2, TRUE , FALSE, 'Content of document #1'),
+    (2, 'Document #2', 2, 3, TRUE, FALSE, 'Content of document #2'),
+    (3, 'Document #3', 3, 1, TRUE, FALSE, 'Content of document #3');

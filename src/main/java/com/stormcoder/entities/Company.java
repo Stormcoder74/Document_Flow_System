@@ -2,13 +2,14 @@ package com.stormcoder.entities;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "companies")
 public class Company {
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String name;
 
@@ -20,13 +21,29 @@ public class Company {
             fetch = FetchType.EAGER)
     private Set<Document> inputDocuments;
 
+    public Company() {
+    }
+
     public Company(String name) {
         this.name = name;
         outputDocuments = new HashSet<>();
         inputDocuments = new HashSet<>();
     }
 
-    public long getId() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Company company = (Company) o;
+        return id == company.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    public Long getId() {
         return id;
     }
 

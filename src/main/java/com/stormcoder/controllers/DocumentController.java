@@ -39,7 +39,10 @@ public class DocumentController {
 
     @GetMapping("/edit/{id}")
     public String editDocument(Model model, @PathVariable(value = "id") Long id) {
-        model.addAttribute("document", documentService.getById(id));
+        Document document = documentService.getById(id);
+        if (document != null) {
+            model.addAttribute("document", document);
+        }
         return "edit-document";
     }
 
@@ -48,7 +51,7 @@ public class DocumentController {
         Document document = documentService.getById(editedDocument.getId());
         document.setContent(editedDocument.getContent());
         documentService.save(document);
-        return "redirect:/documents?company=Abibas";
+        return "redirect:/documents?companyName=Abibas";
     }
 
     @GetMapping("/sign/{id}")
@@ -56,7 +59,8 @@ public class DocumentController {
         Document document = documentService.getById(id);
         if (document != null) {
             document.signIt(companyService.getByName("Abibas"));
+            documentService.save(document);
         }
-        return "redirect:/documents?company=Abibas";
+        return "redirect:/documents?companyName=Abibas";
     }
 }

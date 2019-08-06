@@ -23,7 +23,7 @@
     <h3 th:text="${'Редактирование документа'}"/>
     <form th:action="@{/documents/save}"
           th:object="${document}" method="post" class="form-horizontal">
-        <input th:field="*{id}"/>
+        <input th:field="*{id}" hidden/>
 
         <div style="margin-bottom: 25px" class="input-group">
             <input th:field="*{content}" placeholder="content (*)" class="form-control"/>

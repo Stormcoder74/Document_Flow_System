@@ -26,7 +26,7 @@
                 <li sec:authorize="isAuthenticated()" class="nav-item">
                     <div>
                         <form th:action="@{/logout}" method="POST">
-                            <a href="#" class="btn btn-success" sec:authentication="principal.username."/>
+                            <span class="btn btn-success" sec:authentication="principal.username"/>
                             <input type="submit" class="btn btn-success" value="Logout"/>
                         </form>
                     </div>

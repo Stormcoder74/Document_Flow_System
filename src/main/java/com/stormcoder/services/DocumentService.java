@@ -8,8 +8,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DocumentService {
+    private DocumentRepository documentRepository;
+
     @Autowired
-    DocumentRepository documentRepository;
+    public void setDocumentRepository(DocumentRepository documentRepository) {
+        this.documentRepository = documentRepository;
+    }
 
     public Iterable<Document> getAll() {
         return documentRepository.findAll();

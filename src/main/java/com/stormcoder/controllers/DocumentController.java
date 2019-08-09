@@ -4,11 +4,16 @@ import com.stormcoder.entities.Company;
 import com.stormcoder.entities.Document;
 import com.stormcoder.services.CompanyService;
 import com.stormcoder.services.DocumentService;
+import netscape.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,7 +52,8 @@ public class DocumentController {
     }
 
     @PostMapping("/save")
-    public String saveDocument(@ModelAttribute("document") Document editedDocument) {
+    public String saveDocument(@ModelAttribute("document") Document editedDocument,
+                               @AuthenticationPrincipal User user) {
         Document document = documentService.getById(editedDocument.getId());
         document.setContent(editedDocument.getContent());
         documentService.save(document);
@@ -55,7 +61,8 @@ public class DocumentController {
     }
 
     @GetMapping("/sign/{id}")
-    public String showOneProduct(Model model, @PathVariable(value = "id") Long id) {
+    public String showOneProduct(Model model, @PathVariable("id") Long id,
+                                 @AuthenticationPrincipal User user) {
         Document document = documentService.getById(id);
         if (document != null) {
             document.signIt(companyService.getByName("Abibas"));

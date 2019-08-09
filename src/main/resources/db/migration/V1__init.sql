@@ -10,42 +10,55 @@ VALUES
     ('Coldate');
 
 CREATE TABLE users (
+    id SERIAL,
     username VARCHAR(50) NOT NULL,
     password VARCHAR(100) NOT NULL,
-    enabled boolean NOT NULL,
     company_id BIGINT,
 
-    PRIMARY KEY (username),
+    PRIMARY KEY (id),
 
     CONSTRAINT fk_company
     FOREIGN KEY (company_id)
     REFERENCES companies (id)
 );
 
-INSERT INTO users
+INSERT INTO users (username, password, company_id)
 VALUES
-    ('user1', '{noop}123', TRUE, 1),
-    ('user2', '{noop}123', TRUE, 2),
-    ('user3', '{noop}123', TRUE, 3);
+    ('user1', '{noop}123', 1),
+    ('user2', '{noop}123', 2),
+    ('user3', '{noop}123', 3);
 
-CREATE TABLE authorities (
-    username VARCHAR(50),
-    authority VARCHAR(50),
+CREATE TABLE roles (
+    id SERIAL,
+    name VARCHAR(50),
 
-    CONSTRAINT authorities_pk
-    PRIMARY KEY (username, authority),
-
-    CONSTRAINT authorities_ibfk_1
-    FOREIGN KEY (username)
-    REFERENCES users (username)
+    PRIMARY KEY (id)
 );
 
-INSERT INTO authorities
+INSERT INTO roles (name)
 VALUES
-    ('user1', 'ROLE_ADMIN'),
-    ('user1', 'ROLE_USER'),
-    ('user2', 'ROLE_USER'),
-    ('user3', 'ROLE_USER');
+    ('ROLE_ADMIN'),
+    ('ROLE_USER');
+
+CREATE TABLE users_roles (
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+
+    PRIMARY KEY (user_id, role_id),
+
+    CONSTRAINT fk_user_id_01 FOREIGN KEY (user_id)
+    REFERENCES users (id),
+
+    CONSTRAINT fk_role_id_01 FOREIGN KEY (user_id)
+    REFERENCES users (id)
+);
+
+INSERT INTO users_roles
+VALUES
+    (1, 1),
+    (1, 2),
+    (2, 2),
+    (3, 2);
 
 CREATE TABLE documents (
     id serial PRIMARY KEY,
@@ -67,6 +80,6 @@ CREATE TABLE documents (
 
 INSERT INTO documents
 VALUES
-    (1, 'Document #1', 1, 2, TRUE , FALSE, 'Content of document #1'),
+    (1, 'Document #1', 1, 2, TRUE, FALSE, 'Content of document #1'),
     (2, 'Document #2', 2, 3, TRUE, FALSE, 'Content of document #2'),
     (3, 'Document #3', 3, 1, TRUE, FALSE, 'Content of document #3');

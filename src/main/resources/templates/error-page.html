@@ -11,6 +11,6 @@
 <body>
     <div th:replace="~{top_bar :: bar(Home)}"/>
     <h3 th:text="${errorMessage}"/><br>
-    <a class="nav-link" th:href="@{'/documents'}">Documents list</a>
+    <a class="btn btn-primary" th:href="@{'/documents'}" role="button">К списку документов</a>
 </body>
 </html>

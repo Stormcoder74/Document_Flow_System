@@ -16,7 +16,7 @@
         <thead>
         <tr>
             <th>Заголовок документа</th>
-            <th>Документ создан компанией</th>
+            <th>Документ создан</th>
             <th>Компания 1</th>
             <th>Компания 2</th>
             <th>Содержание</th>
@@ -28,7 +28,8 @@
         <tbody>
         <tr th:each="document : ${documents}">
             <td th:text="${document.getTitle()}"/>
-            <td th:text="${document.getCompanyCreator().getName()}"/>
+            <td th:text="${document.getCompanyCreator().getName()}
+                + ' ' + ${document.creationTime}"/>
             <td th:text="${document.getFirstCompany().getName()}"/>
             <td th:text="${document.getSecondCompany().getName()}"/>
             <td th:text="${document.getContent()}"/>

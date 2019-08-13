@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,16 +53,26 @@ public class DocumentController {
     @GetMapping("/add-form")
     public String addDocument(Model model, Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        model.addAttribute("firstCompany", user.getCompany().getName());
+        if (documentService.canCreateDocument(user.getCompany())) {
+            if (documentService.canCreateDocumentPerHour()) {
+                model.addAttribute("firstCompany", user.getCompany().getName());
 
-        List<String> companyNames = companyService.getAll()
-                .stream()
-                .map(Company::getName)
-                .filter(companyName -> !(companyName.equals(user.getCompany().getName())))
-                .collect(Collectors.toList());
-        model.addAttribute("companies", companyNames);
+                List<String> companyNames = companyService.getAll()
+                        .stream()
+                        .map(Company::getName)
+                        .filter(companyName -> !(companyName.equals(user.getCompany().getName())))
+                        .collect(Collectors.toList());
+                model.addAttribute("companies", companyNames);
 
-        return "add-document";
+                return "add-document";
+            } else {
+                model.addAttribute("errorMessage", "Вы превышаете допустимое количество документооборотов в час!");
+                return "error-page";
+            }
+        } else {
+            model.addAttribute("errorMessage", "Вы превышаете допустимое количество документооборотов!");
+            return "error-page";
+        }
     }
 
     @PostMapping("/add")
@@ -85,9 +96,17 @@ public class DocumentController {
 
     @GetMapping("/edit/{id}")
     public String editDocument(Model model, @PathVariable(value = "id") Long id) {
-        Document document = documentService.getById(id);
-        if (document != null) {
-            model.addAttribute("document", document);
+        if (documentService.canEditAndSign()) {
+            Document document = documentService.getById(id);
+            if (document != null) {
+                model.addAttribute("document", document);
+            } else {
+                model.addAttribute("errorMessage", "Нет такого документа!");
+                return "error-page";
+            }
+        } else {
+            model.addAttribute("errorMessage", "В это время запрещено редактирование документа!");
+            return "error-page";
         }
         return "edit-document";
     }
@@ -99,8 +118,8 @@ public class DocumentController {
         if (document != null) {
             document.setContent(savedDocument.getContent());
 
-            if (!userService.findByUsername(principal.getName()).getCompany().getName()
-                    .equals(document.getFirstCompany().getName())) {
+            if (userService.findByUsername(principal.getName()).getCompany()
+                    .equals(document.getSecondCompany())) {
                 Company tmpCompany = document.getFirstCompany();
                 document.setFirstCompany(document.getSecondCompany());
                 document.setSecondCompany(tmpCompany);
@@ -119,17 +138,22 @@ public class DocumentController {
     }
 
     @GetMapping("/sign/{id}")
-    public String showOneProduct(Principal principal, @PathVariable("id") Long id) {
-        User user = userService.findByUsername(principal.getName());
-        Document document = documentService.getById(id);
-        if (document != null) {
-            if (document.getFirstCompany().getName().equals(user.getCompany().getName())) {
-                document.setFirstSignature(true);
-            } else if (document.getSecondCompany().getName().equals(user.getCompany().getName())
-                    && document.isFirstSignature()) {
-                document.setSecondSignature(true);
+    public String showOneProduct(Model model, Principal principal, @PathVariable("id") Long id) {
+        if (documentService.canEditAndSign()) {
+            User user = userService.findByUsername(principal.getName());
+            Document document = documentService.getById(id);
+            if (document != null) {
+                if (document.getFirstCompany().getName().equals(user.getCompany().getName())) {
+                    document.setFirstSignature(true);
+                } else if (document.getSecondCompany().getName().equals(user.getCompany().getName())
+                        && document.isFirstSignature()) {
+                    document.setSecondSignature(true);
+                }
+                documentService.save(document);
             }
-            documentService.save(document);
+        } else {
+            model.addAttribute("errorMessage", "В это время запрещено подписание документа!");
+            return "error-page";
         }
         return "redirect:/documents";
     }

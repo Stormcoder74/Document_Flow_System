@@ -62,6 +62,7 @@ VALUES
 
 CREATE TABLE documents (
     id serial PRIMARY KEY,
+    creation_time TIMESTAMP,
     title VARCHAR(50) NOT NULL,
     company_creator BIGINT,
     first_company BIGINT,

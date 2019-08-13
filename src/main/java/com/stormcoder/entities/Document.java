@@ -1,6 +1,7 @@
 package com.stormcoder.entities;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
@@ -9,6 +10,9 @@ public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "creation_time")
+    private Timestamp creationTime;
 
     private String title;
 
@@ -65,6 +69,14 @@ public class Document {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Timestamp getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(Timestamp creationTime) {
+        this.creationTime = creationTime;
     }
 
     public String getTitle() {

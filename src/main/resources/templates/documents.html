@@ -16,6 +16,7 @@
         <thead>
         <tr>
             <th>Заголовок документа</th>
+            <th>Документ создан компанией</th>
             <th>Компания 1</th>
             <th>Компания 2</th>
             <th>Содержание</th>
@@ -27,6 +28,7 @@
         <tbody>
         <tr th:each="document : ${documents}">
             <td th:text="${document.getTitle()}"/>
+            <td th:text="${document.getCompanyCreator().getName()}"/>
             <td th:text="${document.getFirstCompany().getName()}"/>
             <td th:text="${document.getSecondCompany().getName()}"/>
             <td th:text="${document.getContent()}"/>
@@ -50,6 +52,9 @@
                         and (document.isFirstSignature() and !document.isSecondSignature())}">
                 <a th:href="@{'/documents/edit/' + ${document.id}}" th:text="Редактировать"/><br>
                 <a th:href="@{'/documents/sign/' + ${document.id}}" th:text="Подписать"/>
+                <a th:if="${document.getCompanyCreator().getName() eq user.getCompany().getName() and
+                        !document.isFirstSignature() and !document.isSecondSignature()}"
+                   th:href="@{'/documents/delete/' + ${document.id}}" th:text="Удалить"/>
             </td>
         </tr>
         </tbody>

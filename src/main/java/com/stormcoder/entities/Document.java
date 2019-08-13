@@ -13,6 +13,10 @@ public class Document {
     private String title;
 
     @ManyToOne
+    @JoinColumn(name = "company_creator")
+    private Company companyCreator;
+
+    @ManyToOne
     @JoinColumn(name = "first_company")
     private Company firstCompany;
 
@@ -31,9 +35,10 @@ public class Document {
     public Document() {
     }
 
-    public Document(String title, Company firstCompany,
+    public Document(String title, Company companyCreator, Company firstCompany,
                     Company secondCompany, String content) {
         this.title = title;
+        this.companyCreator = companyCreator;
         this.firstCompany = firstCompany;
         this.secondCompany = secondCompany;
         firstSignature = false;
@@ -68,6 +73,14 @@ public class Document {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Company getCompanyCreator() {
+        return companyCreator;
+    }
+
+    public void setCompanyCreator(Company companyCreator) {
+        this.companyCreator = companyCreator;
     }
 
     public Company getFirstCompany() {

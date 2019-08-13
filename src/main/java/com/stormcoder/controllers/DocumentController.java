@@ -65,14 +65,14 @@ public class DocumentController {
     }
 
     @PostMapping("/add")
-    public String addDocument(@ModelAttribute("title") String title,
+    public String addDocument(Model model,
+                              @ModelAttribute("title") String title,
                               @ModelAttribute("firstCompany") String firstCompany,
                               @ModelAttribute("secondCompany") String secondCompany,
-                              @ModelAttribute("content") String content,
-                              Model model) {
+                              @ModelAttribute("content") String content) {
 
         Document document = new Document(title, companyService.getByName(firstCompany),
-                companyService.getByName(secondCompany), content);
+                companyService.getByName(firstCompany), companyService.getByName(secondCompany), content);
         try {
             documentService.save(document);
         } catch (IllegalArgumentException e) {
@@ -93,15 +93,18 @@ public class DocumentController {
     }
 
     @PostMapping("/save")
-    public String saveDocument(@ModelAttribute("document") Document savedDocument,
-                               Model model) {
+    public String saveDocument(Model model, Principal principal,
+                               @ModelAttribute("document") Document savedDocument) {
         Document document = documentService.getById(savedDocument.getId());
         if (document != null) {
             document.setContent(savedDocument.getContent());
 
-            Company tmpCompany = document.getFirstCompany();
-            document.setFirstCompany(document.getSecondCompany());
-            document.setSecondCompany(tmpCompany);
+            if (!userService.findByUsername(principal.getName()).getCompany().getName()
+                    .equals(document.getFirstCompany().getName())) {
+                Company tmpCompany = document.getFirstCompany();
+                document.setFirstCompany(document.getSecondCompany());
+                document.setSecondCompany(tmpCompany);
+            }
 
             document.setFirstSignature(false);
 
@@ -129,5 +132,18 @@ public class DocumentController {
             documentService.save(document);
         }
         return "redirect:/documents";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteDocument(Model model, Principal principal,
+                                 @PathVariable(value = "id") Long id) {
+        try {
+            documentService.deleteById(id, userService.findByUsername(principal.getName()));
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error-page";
+        }
+
+        return "edit-document";
     }
 }

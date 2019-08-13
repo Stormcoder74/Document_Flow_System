@@ -14,11 +14,11 @@ public class Company {
     private String name;
 
     @OneToMany(mappedBy = "firstCompany",
-            fetch = FetchType.EAGER)
+            fetch = FetchType.LAZY)
     private Set<Document> outputDocuments;
 
     @OneToMany(mappedBy = "secondCompany",
-            fetch = FetchType.EAGER)
+            fetch = FetchType.LAZY)
     private Set<Document> inputDocuments;
 
     public Company() {

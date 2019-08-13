@@ -63,11 +63,16 @@ VALUES
 CREATE TABLE documents (
     id serial PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
+    company_creator BIGINT,
     first_company BIGINT,
     second_company BIGINT,
     first_signature BOOL,
     second_signature BOOL,
     content TEXT,
+
+    CONSTRAINT fk_company_creator
+    FOREIGN KEY (company_creator)
+    REFERENCES companies (id),
 
     CONSTRAINT fk_first_company
     FOREIGN KEY (first_company)

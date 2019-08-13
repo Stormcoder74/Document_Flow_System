@@ -78,8 +78,8 @@ CREATE TABLE documents (
     REFERENCES companies (id)
 );
 
-INSERT INTO documents
-VALUES
-    (1, 'Document #1', 1, 2, TRUE, FALSE, 'Content of document #1'),
-    (2, 'Document #2', 2, 3, TRUE, FALSE, 'Content of document #2'),
-    (3, 'Document #3', 3, 1, TRUE, FALSE, 'Content of document #3');
+-- INSERT INTO documents
+-- VALUES
+--     (1, 'Document #1', 1, 2, TRUE, FALSE, 'Content of document #1'),
+--     (2, 'Document #2', 2, 3, TRUE, FALSE, 'Content of document #2'),
+--     (3, 'Document #3', 3, 1, TRUE, FALSE, 'Content of document #3');

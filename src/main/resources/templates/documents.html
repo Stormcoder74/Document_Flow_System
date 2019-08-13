@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.w3.org/1999/xhtml">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
@@ -34,26 +33,30 @@
             <td th:text="${document.isFirstSignature()}"/>
             <td th:text="${document.isSecondSignature()}"/>
 
-            <td th:if="${document.getFirstCompany().getName() ne 'Abibas'
-                        and !(document.isFirstSignature() and document.isSecondSignature())}">
-                <a th:href="@{'/documents/edit/' + ${document.id}}" th:text="Редактировать"/><br>
-                <a th:href="@{'/documents/sign/' + ${document.id}}" th:text="Подписать"/>
+            <td th:if="${document.isFirstSignature() and document.isSecondSignature()}">
+                <span th:text="${'Обработка документа завершена'}"/>
             </td>
-
-            <td th:if="${document.getFirstCompany().getName() eq 'Abibas'
-                        and !(document.isFirstSignature() and document.isSecondSignature())}">
+            <!--TODO организовать условия-->
+            <td th:if="${document.getFirstCompany().getName() eq user.getCompany().getName()
+                        and (document.isFirstSignature() and !(document.isSecondSignature()))} or
+                        ${document.getSecondCompany().getName() eq user.getCompany().getName()
+                        and (!document.isFirstSignature() and !(document.isSecondSignature()))}">
                 <span th:text="${'Документ на рассмотрении у партнера'}"/>
             </td>
 
-            <td th:if="${document.isFirstSignature() and document.isSecondSignature()}">
-                <span th:text="${'Обработка документа завершена'}"/>
+            <td th:if="${document.getFirstCompany().getName() eq user.getCompany().getName()
+                        and (!document.isFirstSignature() and !document.isSecondSignature())} or
+                        ${document.getSecondCompany().getName() eq user.getCompany().getName()
+                        and (document.isFirstSignature() and !document.isSecondSignature())}">
+                <a th:href="@{'/documents/edit/' + ${document.id}}" th:text="Редактировать"/><br>
+                <a th:href="@{'/documents/sign/' + ${document.id}}" th:text="Подписать"/>
             </td>
         </tr>
         </tbody>
     </table>
 
     <div>
-        <form th:action="@{/products/add}" method="get" class="form-horizontal">
+        <form th:action="@{/documents/add-form}" method="get" class="form-horizontal">
             <div style="margin-top: 10px" class="form-group">
                 <button type="submit" class="btn btn-primary">Добавить документ</button>
             </div>

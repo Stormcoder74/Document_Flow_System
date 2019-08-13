@@ -5,7 +5,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "documents")
-public class Document implements Singable {
+public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,7 +46,7 @@ public class Document implements Singable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Document document = (Document) o;
-        return id == document.id;
+        return id.equals(document.id);
     }
 
     @Override
@@ -94,23 +94,19 @@ public class Document implements Singable {
         return secondSignature;
     }
 
+    public void setFirstSignature(boolean firstSignature) {
+        this.firstSignature = firstSignature;
+    }
+
+    public void setSecondSignature(boolean secondSignature) {
+        this.secondSignature = secondSignature;
+    }
+
     public String getContent() {
         return content;
     }
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    @Override
-    public boolean signIt(Company company) {
-        if (secondCompany.equals(company) && !secondSignature){
-            secondSignature = true;
-            Company tmpCompany = firstCompany;
-            firstCompany = secondCompany;
-            secondCompany = tmpCompany;
-            return true;
-        }
-        return false;
     }
 }

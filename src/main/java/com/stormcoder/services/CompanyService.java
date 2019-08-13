@@ -5,6 +5,8 @@ import com.stormcoder.repositories.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CompanyService {
     @Autowired
@@ -12,5 +14,9 @@ public class CompanyService {
 
     public Company getByName(String name){
         return companyRepository.findByName(name);
+    }
+
+    public List<Company> getAll() {
+        return (List<Company>) companyRepository.findAll();
     }
 }

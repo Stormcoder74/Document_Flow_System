@@ -27,7 +27,14 @@ public class DocumentService {
         return documentRepository.findById(id).orElse(null);
     }
 
-    public void save(Document document) {
-        documentRepository.save(document);
+    public void save(Document document) throws IllegalArgumentException {
+        if (document.getTitle() != null && !document.getTitle().isEmpty() &&
+                document.getFirstCompany() != null &&
+                document.getSecondCompany() != null &&
+                document.getContent() != null && !document.getContent().isEmpty()) {
+            documentRepository.save(document);
+        } else {
+            throw new IllegalArgumentException("Некоторые параметры документа заданы неверно!");
+        }
     }
 }

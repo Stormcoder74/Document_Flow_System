@@ -68,16 +68,16 @@ public class DocumentController {
     public String addDocument(@ModelAttribute("title") String title,
                               @ModelAttribute("firstCompany") String firstCompany,
                               @ModelAttribute("secondCompany") String secondCompany,
-                              @ModelAttribute("content") String content) {
+                              @ModelAttribute("content") String content,
+                              Model model) {
 
         Document document = new Document(title, companyService.getByName(firstCompany),
                 companyService.getByName(secondCompany), content);
-
-        if (document.getTitle() != null && !document.getTitle().isEmpty() &&
-                document.getFirstCompany() != null &&
-                document.getSecondCompany() != null &&
-                document.getContent() != null && !document.getContent().isEmpty()) {
+        try {
             documentService.save(document);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error-page";
         }
 
         return "redirect:/documents";
@@ -93,7 +93,8 @@ public class DocumentController {
     }
 
     @PostMapping("/save")
-    public String saveDocument(@ModelAttribute("document") Document savedDocument) {
+    public String saveDocument(@ModelAttribute("document") Document savedDocument,
+                               Model model) {
         Document document = documentService.getById(savedDocument.getId());
         if (document != null) {
             document.setContent(savedDocument.getContent());
@@ -104,7 +105,12 @@ public class DocumentController {
 
             document.setFirstSignature(false);
 
-            documentService.save(document);
+            try {
+                documentService.save(document);
+            } catch (IllegalArgumentException e) {
+                model.addAttribute("errorMessage", e.getMessage());
+                return "error-page";
+            }
         }
         return "redirect:/documents";
     }

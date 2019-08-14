@@ -9,8 +9,12 @@ import java.util.List;
 
 @Service
 public class CompanyService {
+    private CompanyRepository companyRepository;
+
     @Autowired
-    CompanyRepository companyRepository;
+    public void setCompanyRepository(CompanyRepository companyRepository) {
+        this.companyRepository = companyRepository;
+    }
 
     public Company getByName(String name){
         return companyRepository.findByName(name);

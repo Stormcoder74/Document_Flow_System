@@ -22,10 +22,6 @@ public class Company {
     private Set<Document> inputDocuments;
 
     public Company() {
-    }
-
-    public Company(String name) {
-        this.name = name;
         outputDocuments = new HashSet<>();
         inputDocuments = new HashSet<>();
     }
@@ -43,10 +39,6 @@ public class Company {
         return Objects.hash(id);
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public String getName() {
         return name;
     }
@@ -56,18 +48,10 @@ public class Company {
     }
 
     public Set<Document> getOutputDocuments() {
-        return new HashSet<>(outputDocuments);
-    }
-
-    public void addOutputDocument(Document outputDocument) {
-        outputDocuments.add(outputDocument);
+        return outputDocuments;
     }
 
     public Set<Document> getInputDocuments() {
-        return new HashSet<>(inputDocuments);
-    }
-
-    public void addInputDocument(Document inputDocument) {
-        inputDocuments.add(inputDocument);
+        return inputDocuments;
     }
 }

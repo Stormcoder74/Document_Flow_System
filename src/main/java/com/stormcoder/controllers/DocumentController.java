@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,7 +43,7 @@ public class DocumentController {
         User user = userService.findByUsername(principal.getName());
         model.addAttribute("user", user);
 
-        Set<Document> documents = new HashSet<>(user.getCompany().getInputDocuments());
+        Set<Document> documents = user.getCompany().getInputDocuments();
         documents.addAll(user.getCompany().getOutputDocuments());
         model.addAttribute("documents", documents);
 
@@ -176,7 +175,6 @@ public class DocumentController {
             model.addAttribute("errorMessage", e.getMessage());
             return "error-page";
         }
-
-        return "edit-document";
+        return "redirect:/documents";
     }
 }

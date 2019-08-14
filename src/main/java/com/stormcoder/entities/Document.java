@@ -83,16 +83,8 @@ public class Document {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public Company getCompanyCreator() {
         return companyCreator;
-    }
-
-    public void setCompanyCreator(Company companyCreator) {
-        this.companyCreator = companyCreator;
     }
 
     public Company getFirstCompany() {

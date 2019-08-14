@@ -26,13 +26,13 @@
         <input th:field="*{id}" hidden/>
 
         <div style="margin-bottom: 25px" class="input-group">
-            <input th:field="*{content}" placeholder="content (*)" class="form-control"/>
+            <input th:field="*{content}" placeholder="content" class="form-control"/>
         </div>
 
         <div style="margin-top: 10px" class="form-group">
             <div class="col-sm-6 controls">
-                <button type="submit" class="btn btn-primary"
-                        th:text="${'Сохранить'}"/>
+                <button type="submit" class="btn btn-primary" th:text="${'Сохранить'}"/>
+                <a class="btn btn-primary" th:href="@{'/documents'}" role="button">Отменить</a>
             </div>
         </div>
     </form>

@@ -18,7 +18,7 @@
                     <a class="nav-link" th:href="@{/}">Home<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item" th:classappend="${activeTab == 'DocumentsList' ? 'active' : ''}">
-                    <a class="nav-link" th:href="@{'/documents?companyName=Abibas'}">Documents list</a>
+                    <a class="nav-link" th:href="@{'/documents'}">Documents list</a>
                 </li>
                 <li class="nav-item" th:classappend="${activeTab == 'DocumentsDetails' ? 'active' : ''}">
                     <a class="nav-link" th:href="@{#}" th:text="'Documents details'"></a>

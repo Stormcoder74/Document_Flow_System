@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,9 +43,11 @@ public class DocumentController {
     public String list(Model model, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         model.addAttribute("user", user);
+
         Set<Document> documents = new HashSet<>(user.getCompany().getInputDocuments());
         documents.addAll(user.getCompany().getOutputDocuments());
         model.addAttribute("documents", documents);
+
         return "documents";
     }
 
@@ -59,15 +60,14 @@ public class DocumentController {
             return "error-page";
         }
 
-        if (!documentService.canCreateDocumentPerHour()) {
-            model.addAttribute("errorMessage", "Вы превышаете допустимое количество документооборотов в час!");
+        if (!documentService.canCreateDocumentPerHour(user.getCompany())) {
+            model.addAttribute("errorMessage", "Вы превышаете допустимое количество созданных документов в час!");
             return "error-page";
         }
 
         model.addAttribute("firstCompany", user.getCompany().getName());
 
-        List<String> companyNames = companyService.getAll()
-                .stream()
+        List<String> companyNames = companyService.getAll().stream()
                 .map(Company::getName)
                 .filter(companyName -> !(companyName.equals(user.getCompany().getName())))
                 .collect(Collectors.toList());
@@ -82,6 +82,12 @@ public class DocumentController {
                               @ModelAttribute("firstCompany") String firstCompany,
                               @ModelAttribute("secondCompany") String secondCompany,
                               @ModelAttribute("content") String content) {
+        if (!documentService.canCreateDocumentWithTheCompany(
+                companyService.getByName(firstCompany), companyService.getByName(secondCompany))) {
+            model.addAttribute("errorMessage", "Вы превышаете " +
+                    "допустимое количество документооборотов с одной компанией!");
+            return "error-page";
+        }
 
         Document document = new Document(title, companyService.getByName(firstCompany),
                 companyService.getByName(firstCompany), companyService.getByName(secondCompany), content);
@@ -123,8 +129,9 @@ public class DocumentController {
 
         document.setContent(savedDocument.getContent());
 
-        if (userService.findByUsername(principal.getName()).getCompany()
-                .equals(document.getSecondCompany())) {
+        if (document.getSecondCompany().equals(
+                userService.findByUsername(principal.getName()).getCompany()
+        )) {
             Company tmpCompany = document.getFirstCompany();
             document.setFirstCompany(document.getSecondCompany());
             document.setSecondCompany(tmpCompany);
@@ -155,12 +162,7 @@ public class DocumentController {
             return "error-page";
         }
 
-        if (document.getFirstCompany().getName().equals(user.getCompany().getName())) {
-            document.setFirstSignature(true);
-        } else if (document.getSecondCompany().getName().equals(user.getCompany().getName())
-                && document.isFirstSignature()) {
-            document.setSecondSignature(true);
-        }
+        documentService.sign(document, user);
         documentService.save(document);
         return "redirect:/documents";
     }

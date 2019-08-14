@@ -7,6 +7,8 @@ INSERT INTO companies (name)
 VALUES
     ('Abibas'),
     ('Aplle'),
+    ('Soni'),
+    ('Tayota'),
     ('Coldate');
 
 CREATE TABLE users (
@@ -26,7 +28,9 @@ INSERT INTO users (username, password, company_id)
 VALUES
     ('user1', '{noop}123', 1),
     ('user2', '{noop}123', 2),
-    ('user3', '{noop}123', 3);
+    ('user3', '{noop}123', 3),
+    ('user4', '{noop}123', 4),
+    ('user5', '{noop}123', 5);
 
 CREATE TABLE roles (
     id SERIAL,
@@ -58,7 +62,9 @@ VALUES
     (1, 1),
     (1, 2),
     (2, 2),
-    (3, 2);
+    (3, 2),
+    (4, 2),
+    (5, 2);
 
 CREATE TABLE documents (
     id serial PRIMARY KEY,
@@ -83,9 +89,3 @@ CREATE TABLE documents (
     FOREIGN KEY (second_company)
     REFERENCES companies (id)
 );
-
--- INSERT INTO documents
--- VALUES
---     (1, 'Document #1', 1, 2, TRUE, FALSE, 'Content of document #1'),
---     (2, 'Document #2', 2, 3, TRUE, FALSE, 'Content of document #2'),
---     (3, 'Document #3', 3, 1, TRUE, FALSE, 'Content of document #3');

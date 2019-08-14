@@ -26,14 +26,6 @@ public class DocumentService {
         this.documentsConstraints = documentsConstraints;
     }
 
-    public Iterable<Document> getAll() {
-        return documentRepository.findAll();
-    }
-
-    public Iterable<Document> getAllByCompany(Company company) {
-        return documentRepository.getAllByFirstCompanyAndSecondCompany(company, company);
-    }
-
     public Document getById(Long id) {
         return documentRepository.findById(id).orElse(null);
     }
@@ -50,6 +42,15 @@ public class DocumentService {
             documentRepository.save(document);
         } else {
             throw new IllegalArgumentException("Некоторые параметры документа заданы неверно!");
+        }
+    }
+
+    public void sign(Document document, User user) {
+        if (document.getFirstCompany().equals(user.getCompany())) {
+            document.setFirstSignature(true);
+        } else if (document.getSecondCompany().equals(user.getCompany())
+                && document.isFirstSignature()) {
+            document.setSecondSignature(true);
         }
     }
 
@@ -76,11 +77,18 @@ public class DocumentService {
     }
 
     public boolean canCreateDocument(Company company) {
-        int count = documentRepository.findAllIncompleteDocFlows(company);
+        int count = documentRepository.countAllIncompleteDocFlows(company);
         return count < documentsConstraints.getMaxDocumentFlows();
     }
 
-    public boolean canCreateDocumentPerHour() {
-        return true;
+    public boolean canCreateDocumentPerHour(Company company) {
+        Timestamp oneHourAgo = new Timestamp(System.currentTimeMillis() - 3600000);
+        int count = documentRepository.countAllCreatedPerHour(company, oneHourAgo);
+        return count < documentsConstraints.getMaxDocumentPerHour();
+    }
+
+    public boolean canCreateDocumentWithTheCompany(Company company1, Company company2) {
+        int count = documentRepository.countIncompleteDocFlowsWithTheCompany(company1, company2);
+        return count < documentsConstraints.getMaxDocumentFlowsPerCompany();
     }
 }

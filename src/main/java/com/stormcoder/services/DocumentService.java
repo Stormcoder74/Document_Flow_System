@@ -76,9 +76,8 @@ public class DocumentService {
     }
 
     public boolean canCreateDocument(Company company) {
-        int count = documentRepository.countAllByFirstCompanyOrSecondCompanyAndFirstSignatureOrSecondSignature(
-                company, company, false, false);
-        return count <= documentsConstraints.getMaxDocumentFlows();
+        int count = documentRepository.findAllIncompleteDocFlows(company);
+        return count < documentsConstraints.getMaxDocumentFlows();
     }
 
     public boolean canCreateDocumentPerHour() {

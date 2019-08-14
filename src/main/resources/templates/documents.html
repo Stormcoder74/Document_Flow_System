@@ -39,14 +39,12 @@
             <td th:if="${document.isFirstSignature() and document.isSecondSignature()}">
                 <span th:text="${'Обработка документа завершена'}"/>
             </td>
-            <!--TODO организовать условия-->
             <td th:if="${document.getFirstCompany().getName() eq user.getCompany().getName()
                         and (document.isFirstSignature() and !(document.isSecondSignature()))} or
                         ${document.getSecondCompany().getName() eq user.getCompany().getName()
                         and (!document.isFirstSignature() and !(document.isSecondSignature()))}">
                 <span th:text="${'Документ на рассмотрении у партнера'}"/>
             </td>
-
             <td th:if="${document.getFirstCompany().getName() eq user.getCompany().getName()
                         and (!document.isFirstSignature() and !document.isSecondSignature())} or
                         ${document.getSecondCompany().getName() eq user.getCompany().getName()
